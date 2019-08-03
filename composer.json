@@ -9,12 +9,16 @@
             "email": "bob@twokings.nl"
         }
     ],
-    "require": {},
+    "require": {
+        "bolt/core": "^4.0.0"
+    },
     "autoload": {
         "psr-4": {
             "Bolt\\NewsWidget\\": "src/"
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "extra": {
         "entrypoint": "Bolt\\NewsWidget\\Extension"
     }

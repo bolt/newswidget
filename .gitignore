@@ -6,3 +6,6 @@ Vagrantfile
 .idea
 .vscode/*
 appveyor.yml
+
+vendor/
+composer.lock
