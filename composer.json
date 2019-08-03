@@ -9,7 +9,7 @@
             "email": "bob@twokings.nl"
         }
     ],
-    "require": {
+    "require-dev": {
         "bolt/core": "^4.0.0"
     },
     "autoload": {
