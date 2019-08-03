@@ -20,7 +20,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
     protected $name = 'News Widget';
     protected $target = AdditionalTarget::WIDGET_BACK_DASHBOARD_ASIDE_TOP;
     protected $priority = 150;
-    protected $template = '@bolt/widgets/news.twig';
+    protected $template = '@news-widget/news.html.twig';
     protected $zone = RequestZone::BACKEND;
     protected $cacheDuration = 3600;
 
