@@ -7,8 +7,15 @@ namespace Bolt\NewsWidget;
 use Bolt\Common\Exception\ParseException;
 use Bolt\Common\Json;
 use Bolt\Version;
+use Bolt\Widget\BaseWidget;
+use Bolt\Widget\CacheAware;
+use Bolt\Widget\CacheTrait;
 use Bolt\Widget\Injector\AdditionalTarget;
 use Bolt\Widget\Injector\RequestZone;
+use Bolt\Widget\RequestAware;
+use Bolt\Widget\StopwatchAware;
+use Bolt\Widget\StopwatchTrait;
+use Bolt\Widget\TwigAware;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 

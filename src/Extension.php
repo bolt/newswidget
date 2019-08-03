@@ -10,7 +10,7 @@ class Extension extends BaseExtension
 {
     public function getName(): string
     {
-        return 'Dashboard Weather Widget';
+        return 'Dashboard News Widget';
     }
 
     public function initialize(): void
