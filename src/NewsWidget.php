@@ -64,7 +64,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
 
         try {
             $client = HttpClient::create();
-            $fetchedNewsData = $client->request('GET', $source)->getContent();
+            $fetchedNewsData = $client->request('GET', $source, $options)->getContent();
         } catch (RequestException $e) {
             return [
                 'error' => [
@@ -127,7 +127,6 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
                 'db' => $driver,
                 'name' => $this->getRequest()->getHost(),
             ],
-            'connect_timeout' => 5,
             'timeout' => 10,
         ];
     }
