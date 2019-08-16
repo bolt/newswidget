@@ -16,8 +16,8 @@ use Bolt\Widget\RequestAware;
 use Bolt\Widget\StopwatchAware;
 use Bolt\Widget\StopwatchTrait;
 use Bolt\Widget\TwigAware;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\HttpClient\HttpClient;
+
 
 class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAware, StopwatchAware
 {
@@ -63,8 +63,8 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         // $this->app['logger.system']->info('Fetching from remote server: ' . $source, ['event' => 'news']);
 
         try {
-            $client = new Client(['base_uri' => $source]);
-            $fetchedNewsData = $client->request('GET', '/', $options)->getBody()->getContents();
+            $client = HttpClient::create();
+            $fetchedNewsData = $client->request('GET', $source)->getContent();
         } catch (RequestException $e) {
             return [
                 'error' => [
