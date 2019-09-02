@@ -9,8 +9,12 @@
             "email": "bob@twokings.nl"
         }
     ],
+    "require": {
+        "php": ">=7.1.3"
+    },
     "require-dev": {
-        "bolt/core": "^4.0.0"
+        "bolt/core": "^4.0.0",
+        "symplify/easy-coding-standard": "^6.0"
     },
     "autoload": {
         "psr-4": {

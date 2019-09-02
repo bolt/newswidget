@@ -18,7 +18,6 @@ use Bolt\Widget\StopwatchTrait;
 use Bolt\Widget\TwigAware;
 use Symfony\Component\HttpClient\HttpClient;
 
-
 class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAware, StopwatchAware
 {
     use CacheTrait;
