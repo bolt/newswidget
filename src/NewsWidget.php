@@ -41,10 +41,10 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         }
 
         $context = [
-            'title' => $currentItem['title'],
-            'news' => $currentItem['teaser'],
-            'link' => $currentItem['link'],
-            'datechanged' => $currentItem['datechanged'],
+            'title' => $currentItem['fieldValues']['title'],
+            'news' => $currentItem['fieldValues']['content'],
+            'link' => $currentItem['fieldValues']['link'],
+            'datechanged' => $currentItem['modifiedAt'],
             'datefetched' => date('Y-m-d H:i:s'),
         ];
 
@@ -56,7 +56,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
      */
     private function getNews(): array
     {
-        $source = 'https://news.bolt.cm/';
+        $source = 'https://news.boltcms.io/';
         $options = $this->fetchNewsOptions();
 
         // $this->app['logger.system']->info('Fetching from remote server: ' . $source, ['event' => 'news']);
@@ -116,15 +116,23 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
      */
     private function fetchNewsOptions(): array
     {
-        // @todo Determine current database driver
-        $driver = 'unknown';
+        $conn = $this->getExtension()->getObjectManager()->getConnection();
+        $db = new \Bolt\Doctrine\Version($conn);
+        $config = $this->getExtension()->getBoltConfig();
+
+        $options = [
+            'v' => Version::VERSION,
+            'php' => PHP_VERSION,
+            'db_driver' => $db->getPlatform()['driver_name'],
+            'db_version' => $db->getPlatform()['server_version'],
+            'host' => $this->getRequest()->getHost(),
+            'name' => $config->get('general/sitename'),
+            'env' => $this->getExtension()->getContainer()->getParameter('kernel.environment'),
+        ];
 
         return [
             'query' => [
-                'v' => Version::VERSION,
-                'p' => PHP_VERSION,
-                'db' => $driver,
-                'name' => $this->getRequest()->getHost(),
+                'hash' => base64_encode(serialize($options)),
             ],
             'timeout' => 10,
         ];

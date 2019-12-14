@@ -5,5 +5,8 @@
     <div class="card-body">
         <p><strong>{{ title|raw }}</strong></p>
         {{ news|raw }}
+        {% if link %}
+            <a href="{{ link }}" target="_blank" class="btn btn-tertiary btn-sm">{{ __('general.phrase.read-more') }}</a>
+        {% endif %}
     </div>
 </div>
