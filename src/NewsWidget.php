@@ -28,7 +28,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
     protected $priority = 150;
     protected $template = '@news-widget/news.html.twig';
     protected $zone = RequestZone::BACKEND;
-    protected $cacheDuration = 3600;
+    protected $cacheDuration = 4 * 3600;
 
     protected function run(array $params = []): ?string
     {
