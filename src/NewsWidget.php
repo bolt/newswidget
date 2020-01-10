@@ -30,23 +30,36 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
     protected $zone = RequestZone::BACKEND;
     protected $cacheDuration = 4 * 3600;
 
+    protected $source = 'https://news.boltcms.io/';
+
     protected function run(array $params = []): ?string
     {
         $news = $this->getNews();
 
-        if (isset($news['information'])) {
-            $currentItem = $news['information'];
-        } else {
-            $currentItem = $news['error'];
-        }
+        try {
 
-        $context = [
-            'title' => $currentItem['fieldValues']['title'],
-            'news' => $currentItem['fieldValues']['content'],
-            'link' => $currentItem['fieldValues']['link'],
-            'datechanged' => $currentItem['modifiedAt'],
-            'datefetched' => date('Y-m-d H:i:s'),
-        ];
+            if (isset($news['information'])) {
+                $currentItem = $news['information'];
+            } else {
+                $currentItem = $news['error'];
+            }
+
+            $context = [
+                'title' => $currentItem['fieldValues']['title'],
+                'news' => $currentItem['fieldValues']['content'],
+                'link' => $currentItem['fieldValues']['link'],
+                'datechanged' => $currentItem['modifiedAt'],
+                'datefetched' => date('Y-m-d H:i:s'),
+            ];
+        } catch (\Exception $e) {
+            $context = [
+                'type' => 'error',
+                'title' => 'Unable to fetch news!',
+                'news' => 'Unable to fetch news!',
+                'link' => '',
+                'teaser' => "<p>Invalid JSON feed returned by " . $this->source . "</p>",
+            ];
+        }
 
         return parent::run($context);
     }
@@ -56,20 +69,19 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
      */
     private function getNews(): array
     {
-        $source = 'https://news.boltcms.io/';
         $options = $this->fetchNewsOptions();
 
         // $this->app['logger.system']->info('Fetching from remote server: ' . $source, ['event' => 'news']);
 
         try {
             $client = HttpClient::create();
-            $fetchedNewsData = $client->request('GET', $source, $options)->getContent();
+            $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
         } catch (RequestException $e) {
             return [
                 'error' => [
                     'type' => 'error',
                     'title' => 'Unable to fetch news!',
-                    'teaser' => "<p>Unable to connect to ${source}</p>",
+                    'teaser' => "<p>Unable to connect to " . $this->source . "</p>",
                     'link' => null,
                     'datechanged' => '0000-01-01 00:00:00',
                 ],
@@ -106,7 +118,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
             'error' => [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
-                'teaser' => "<p>Invalid JSON feed returned by ${source}</p>",
+                'teaser' => "<p>Invalid JSON feed returned by " . $this->source . "</p>",
             ],
         ];
     }
