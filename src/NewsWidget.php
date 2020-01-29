@@ -38,6 +38,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         $news = $this->getNews();
 
         try {
+
             if (isset($news['information'])) {
                 $currentItem = $news['information'];
             } else {
@@ -51,12 +52,12 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
                 'datechanged' => $currentItem['modifiedAt'],
                 'datefetched' => date('Y-m-d H:i:s'),
             ];
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
             $context = [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
                 'link' => '',
-                'news' => '<p>Invalid JSON feed returned by <code>' . $this->source . '</code></p><small>' . $e->getMessage() . ' </small>',
+                'news' => "<p>Invalid JSON feed returned by <code>" . $this->source . "</code></p><small>" . $e->getMessage() . " </small>",
             ];
         }
 
@@ -73,7 +74,8 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         try {
             $client = HttpClient::create();
             $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
-        } catch (\Throwable $e) {
+        } catch (\Exception $e) {
+
             $message = Str::shyphenate(preg_replace('/hash=[a-z0-9\%]+/i', '', $e->getMessage()));
 
             return [
@@ -81,7 +83,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
                     'type' => 'error',
                     'fieldValues' => [
                         'title' => 'Unable to fetch news!',
-                        'content' => '<p>Unable to connect to ' . $this->source . '</p><small>' . $message . ' </small>',
+                        'content' => "<p>Unable to connect to " . $this->source . "</p><small>" . $message . " </small>",
                         'link' => null,
                     ],
                     'modifiedAt' => '0000-01-01 00:00:00',
@@ -118,7 +120,7 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
                 'type' => 'error',
                 'fieldValues' => [
                     'title' => 'Unable to fetch news!',
-                    'content' => '<p>Unable to parse JSON from ' . $this->source . '</p>',
+                    'content' => "<p>Unable to parse JSON from " . $this->source . "</p>",
                     'link' => null,
                 ],
                 'modifiedAt' => '0000-01-01 00:00:00',
