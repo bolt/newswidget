@@ -37,7 +37,6 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         $news = $this->getNews();
 
         try {
-
             if (isset($news['information'])) {
                 $currentItem = $news['information'];
             } else {
@@ -51,13 +50,13 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
                 'datechanged' => $currentItem['modifiedAt'],
                 'datefetched' => date('Y-m-d H:i:s'),
             ];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $context = [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
                 'news' => 'Unable to fetch news!',
                 'link' => '',
-                'teaser' => "<p>Invalid JSON feed returned by " . $this->source . "</p>",
+                'teaser' => '<p>Invalid JSON feed returned by ' . $this->source . '</p>',
             ];
         }
 
@@ -76,12 +75,12 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
         try {
             $client = HttpClient::create();
             $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
-        } catch (RequestException $e) {
+        } catch (\Throwable $e) {
             return [
                 'error' => [
                     'type' => 'error',
                     'title' => 'Unable to fetch news!',
-                    'teaser' => "<p>Unable to connect to " . $this->source . "</p>",
+                    'teaser' => '<p>Unable to connect to ' . $this->source . '</p>',
                     'link' => null,
                     'datechanged' => '0000-01-01 00:00:00',
                 ],
@@ -112,13 +111,11 @@ class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAwa
             return $news;
         }
 
-        // $this->app['logger.system']->error('Invalid JSON feed returned', ['event' => 'news']);
-
         return [
             'error' => [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
-                'teaser' => "<p>Invalid JSON feed returned by " . $this->source . "</p>",
+                'teaser' => '<p>Invalid JSON feed returned by ' . $this->source . '</p>',
             ],
         ];
     }
