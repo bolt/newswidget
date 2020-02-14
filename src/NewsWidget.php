@@ -9,17 +9,17 @@ use Bolt\Common\Json;
 use Bolt\Common\Str;
 use Bolt\Version;
 use Bolt\Widget\BaseWidget;
-use Bolt\Widget\CacheAware;
+use Bolt\Widget\CacheAwareInterface;
 use Bolt\Widget\CacheTrait;
 use Bolt\Widget\Injector\AdditionalTarget;
 use Bolt\Widget\Injector\RequestZone;
-use Bolt\Widget\RequestAware;
-use Bolt\Widget\StopwatchAware;
+use Bolt\Widget\RequestAwareInterface;
+use Bolt\Widget\StopwatchAwareInterface;
 use Bolt\Widget\StopwatchTrait;
-use Bolt\Widget\TwigAware;
+use Bolt\Widget\TwigAwareInterface;
 use Symfony\Component\HttpClient\HttpClient;
 
-class NewsWidget extends BaseWidget implements TwigAware, RequestAware, CacheAware, StopwatchAware
+class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareInterface, CacheAwareInterface, StopwatchAwareInterface
 {
     use CacheTrait;
     use StopwatchTrait;
