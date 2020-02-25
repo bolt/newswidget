@@ -24,6 +24,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "extra": {
-        "entrypoint": "Bolt\\NewsWidget\\Extension"
+        "entrypoint": "Bolt\\NewsWidget\\Extension",
+        "screenshots": [
+            "screenshots/widget.png"
+        ]
     }
 }
