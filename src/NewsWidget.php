@@ -38,7 +38,6 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         $news = $this->getNews();
 
         try {
-
             if (isset($news['information'])) {
                 $currentItem = $news['information'];
             } else {
@@ -52,12 +51,12 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
                 'datechanged' => $currentItem['modifiedAt'],
                 'datefetched' => date('Y-m-d H:i:s'),
             ];
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $context = [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
                 'link' => '',
-                'news' => "<p>Invalid JSON feed returned by <code>" . $this->source . "</code></p><small>" . $e->getMessage() . " </small>",
+                'news' => '<p>Invalid JSON feed returned by <code>' . $this->source . '</code></p><small>' . $e->getMessage() . ' </small>',
             ];
         }
 
@@ -74,8 +73,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         try {
             $client = HttpClient::create();
             $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
-        } catch (\Exception $e) {
-
+        } catch (\Throwable $e) {
             $message = Str::shyphenate(preg_replace('/hash=[a-z0-9\%]+/i', '', $e->getMessage()));
 
             return [
@@ -83,7 +81,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
                     'type' => 'error',
                     'fieldValues' => [
                         'title' => 'Unable to fetch news!',
-                        'content' => "<p>Unable to connect to " . $this->source . "</p><small>" . $message . " </small>",
+                        'content' => '<p>Unable to connect to ' . $this->source . '</p><small>' . $message . ' </small>',
                         'link' => null,
                     ],
                     'modifiedAt' => '0000-01-01 00:00:00',
@@ -120,7 +118,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
                 'type' => 'error',
                 'fieldValues' => [
                     'title' => 'Unable to fetch news!',
-                    'content' => "<p>Unable to parse JSON from " . $this->source . "</p>",
+                    'content' => '<p>Unable to parse JSON from ' . $this->source . '</p>',
                     'link' => null,
                 ],
                 'modifiedAt' => '0000-01-01 00:00:00',
@@ -137,7 +135,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         $db = new \Bolt\Doctrine\Version($conn);
         $config = $this->getExtension()->getBoltConfig();
 
-        $options = [
+        $parameters = [
             'v' => Version::VERSION,
             'php' => PHP_VERSION,
             'db_driver' => $db->getPlatform()['driver_name'],
@@ -147,11 +145,12 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
             'env' => $this->getExtension()->getContainer()->getParameter('kernel.environment'),
         ];
 
-        return [
-            'query' => [
-                'hash' => base64_encode(serialize($options)),
-            ],
-            'timeout' => 10,
+        $curlOptions = $config->get('general/curl_options', [])->all();
+        $curlOptions['timeout'] = 6;
+        $curlOptions['query'] = [
+            'hash' => base64_encode(serialize($parameters)),
         ];
+
+        return $curlOptions;
     }
 }
