@@ -18,6 +18,7 @@ use Bolt\Widget\StopwatchAwareInterface;
 use Bolt\Widget\StopwatchTrait;
 use Bolt\Widget\TwigAwareInterface;
 use Symfony\Component\HttpClient\HttpClient;
+use Tightenco\Collect\Support\Collection;
 
 class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareInterface, CacheAwareInterface, StopwatchAwareInterface
 {
@@ -145,7 +146,8 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
             'env' => $this->getExtension()->getContainer()->getParameter('kernel.environment'),
         ];
 
-        $curlOptions = $config->get('general/curl_options', [])->all();
+        $curlOptions = $config->get('general/curl_options', new Collection([]))->all();
+
         $curlOptions['timeout'] = 6;
         $curlOptions['query'] = [
             'hash' => base64_encode(serialize($parameters)),
