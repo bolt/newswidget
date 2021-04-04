@@ -15,6 +15,6 @@ class Extension extends BaseExtension
 
     public function initialize(): void
     {
-        $this->registerWidget(new NewsWidget());
+        $this->addWidget(new NewsWidget());
     }
 }
