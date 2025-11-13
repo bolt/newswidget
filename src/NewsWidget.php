@@ -92,7 +92,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
 
         try {
             $fetchedNewsItems = Json::parse($fetchedNewsData);
-        } catch (ParseException $e) {
+        } catch (ParseException) {
             // Just move on, a user-friendly notice is returned below.
             $fetchedNewsItems = [];
         }
