@@ -17,9 +17,9 @@ use Bolt\Widget\RequestAwareInterface;
 use Bolt\Widget\StopwatchAwareInterface;
 use Bolt\Widget\StopwatchTrait;
 use Bolt\Widget\TwigAwareInterface;
+use Illuminate\Support\Collection;
 use Symfony\Component\HttpClient\HttpClient;
 use Throwable;
-use Tightenco\Collect\Support\Collection;
 
 class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareInterface, CacheAwareInterface, StopwatchAwareInterface
 {
