@@ -31,7 +31,6 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
     protected $template = '@news-widget/news.html.twig';
     protected $zone = RequestZone::BACKEND;
     protected $cacheDuration = 4 * 3600;
-
     protected $source = 'https://news.boltcms.io/';
 
     protected function run(array $params = []): ?string
