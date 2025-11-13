@@ -1,0 +1,66 @@
+name: Code Analysis
+
+on:
+    pull_request: null
+    push:
+        branches:
+            - main
+
+jobs:
+    rector_analysis:
+        name: Rector analysis
+        runs-on: ubuntu-latest
+        steps:
+            -   uses: actions/checkout@v4
+
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: 8.4
+                    extensions: json, mbstring, pdo, curl, pdo_sqlite
+                    coverage: none
+                    tools: symfony-cli, composer:v2.8
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   run: composer install --no-progress --ansi
+
+            -   run: vendor/bin/rector process -n --no-progress-bar --ansi
+
+    code_analysis:
+        strategy:
+            fail-fast: false
+            matrix:
+                php-version: ['8.2', '8.3', '8.4']
+                actions:
+                    -
+                        name: Coding Standard
+                        # tip: add "--ansi" to commands in CI to make them full of colors
+                        run: vendor/bin/ecs check src --ansi
+
+                    -
+                        name: PHPStan
+                        run: vendor/bin/phpstan analyse --ansi
+
+                    -
+                        name: Check composer.json and composer.lock
+                        run: composer validate --strict --ansi
+
+        name: ${{ matrix.actions.name }} - PHP ${{ matrix.php-version }}
+        runs-on: ubuntu-latest
+
+        steps:
+            -   uses: actions/checkout@v4
+            # see https://github.com/shivammathur/setup-php
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    # test the lowest version, to make sure checks pass on it
+                    php-version: ${{ matrix.php-version }}
+                    extensions: json, mbstring, pdo, curl, pdo_sqlite
+                    coverage: none
+                    tools: symfony-cli, composer:v2.8
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            -   run: composer install --no-progress --ansi
+
+            -   run: ${{ matrix.actions.run }}
