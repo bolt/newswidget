@@ -32,8 +32,11 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
     protected $template = '@news-widget/news.html.twig';
     protected $zone = RequestZone::BACKEND;
     protected $cacheDuration = 4 * 3600;
-    protected $source = 'https://news.boltcms.io/';
+    protected string $source = 'https://news.boltcms.io/';
 
+    /**
+     * @param array<string, mixed> $params
+     */
     protected function run(array $params = []): ?string
     {
         $news = $this->getNews();
@@ -66,6 +69,8 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
 
     /**
      * Get the news from Bolt HQ.
+     *
+     * @return array<string, mixed>
      */
     private function getNews(): array
     {
@@ -75,7 +80,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
             $client = HttpClient::create();
             $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
         } catch (Throwable $e) {
-            $message = Str::shyphenate(preg_replace('/hash=[a-z0-9\%]+/i', '', $e->getMessage()));
+            $message = Str::shyphenate(preg_replace('/hash=[a-z0-9\%]+/i', '', $e->getMessage()) ?? '');
 
             return [
                 'error' => [
@@ -91,7 +96,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         }
 
         try {
-            $fetchedNewsItems = Json::parse($fetchedNewsData);
+            $fetchedNewsItems = Json::parse($fetchedNewsData) ?? [];
         } catch (ParseException) {
             // Just move on, a user-friendly notice is returned below.
             $fetchedNewsItems = [];
@@ -129,6 +134,8 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
 
     /**
      * Get the guzzle options.
+     *
+     * @return array<string, mixed>
      */
     private function fetchNewsOptions(): array
     {
