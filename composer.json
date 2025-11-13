@@ -14,7 +14,7 @@
     },
     "require-dev": {
         "bolt/core": "^4.0.0",
-        "symplify/easy-coding-standard": "^6.0"
+        "symplify/easy-coding-standard": "^13"
     },
     "autoload": {
         "psr-4": {
@@ -28,5 +28,11 @@
         "screenshots": [
             "screenshots/widget.png"
         ]
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/flex": false,
+            "drupol/composer-packages": false
+        }
     }
 }
