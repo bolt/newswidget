@@ -18,6 +18,7 @@ use Bolt\Widget\StopwatchAwareInterface;
 use Bolt\Widget\StopwatchTrait;
 use Bolt\Widget\TwigAwareInterface;
 use Symfony\Component\HttpClient\HttpClient;
+use Throwable;
 use Tightenco\Collect\Support\Collection;
 
 class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareInterface, CacheAwareInterface, StopwatchAwareInterface
@@ -51,7 +52,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
                 'datechanged' => $currentItem['modifiedAt'],
                 'datefetched' => date('Y-m-d H:i:s'),
             ];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $context = [
                 'type' => 'error',
                 'title' => 'Unable to fetch news!',
@@ -73,7 +74,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         try {
             $client = HttpClient::create();
             $fetchedNewsData = $client->request('GET', $this->source, $options)->getContent();
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $message = Str::shyphenate(preg_replace('/hash=[a-z0-9\%]+/i', '', $e->getMessage()));
 
             return [
@@ -101,7 +102,7 @@ class NewsWidget extends BaseWidget implements TwigAwareInterface, RequestAwareI
         // Iterate over the items, pick the first news-item that
         // applies and the first alert we need to show
         foreach ($fetchedNewsItems as $item) {
-            $type = isset($item->type) ? $item->type : 'information';
+            $type = $item->type ?? 'information';
             if (! isset($news[$type])
                 && (empty($item->target_version) || Version::compare($item->target_version, '>'))
             ) {
