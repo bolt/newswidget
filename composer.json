@@ -40,7 +40,8 @@
         "allow-plugins": {
             "symfony/flex": false,
             "drupol/composer-packages": false,
-            "phpstan/extension-installer": true
+            "phpstan/extension-installer": true,
+            "symfony/runtime": true
         }
     }
 }
